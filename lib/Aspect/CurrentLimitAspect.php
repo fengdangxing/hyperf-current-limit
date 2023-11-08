@@ -32,7 +32,7 @@ class CurrentLimitAspect extends AbstractAspect
 
         foreach ($list as $key => $anno) {
             if ($proceedingJoinPoint->className == $anno['class'] && $proceedingJoinPoint->methodName == $anno['method']) {
-                $token = $request->header($anno['annotation']->userName ?: 'token') ?: 'token';
+                $token = $this->getUniqueName($anno['annotation']->uniqueName, $request);
                 if ($anno['annotation']->limitable) {
                     $currentLimitClass->isActionAllowed($token, $url);
                 }
@@ -47,5 +47,15 @@ class CurrentLimitAspect extends AbstractAspect
             }
         }
         return $result;
+    }
+
+    private function getUniqueName($uniqueName, $request)
+    {
+        $token = '';
+        $uniqueName = explode('|', $anno['annotation']->uniqueName);
+        foreach ($uniqueName as $value) {
+            $token .= $request->header($value);
+        }
+        return md5($token);
     }
 }

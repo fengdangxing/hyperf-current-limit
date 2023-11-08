@@ -56,7 +56,7 @@ use Fengdangxing\CurrentLimit\Annotation\CL;
 class IndexController extends AbstractController
 {
     /**
-     * @CL(userName="token",currentable=true,limitable=true)
+     * @CL(uniqueName="token|member_token|user_id",currentable=true,limitable=true)
      */
     public function index()
     {
@@ -70,4 +70,5 @@ class IndexController extends AbstractController
         ];
     }
 }
+#uniqueName 唯一值；头部信息
 ```
