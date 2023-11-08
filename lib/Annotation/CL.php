@@ -12,7 +12,7 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 #[Attribute(Attribute::TARGET_METHOD)]
 class CL extends AbstractAnnotation
 {
-    public $userName;//用户字段名称
+    public $uniqueName;//唯一值
     public $currentable = true;//并发限制开启
     public $limitable = true;//限流开启
 
