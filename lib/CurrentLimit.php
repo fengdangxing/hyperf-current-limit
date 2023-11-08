@@ -41,12 +41,15 @@ class CurrentLimit
     /**
      * 并发处理
      */
-    public function isConcurrentRequests(array $params, string $url, $userId)
+    public function isConcurrentRequests(array $params, string $url, $userId, $isThrow)
     {
         [$key, $hashKey, $v] = $this->getRedisKey($params, $url, $userId);
         $ret = RedisHelper::init()->hSet($key, $hashKey, $v);
         if (!$ret) {
-            throw new \Exception("Concurrent limit", 11009);
+            if ($isThrow) {
+                throw new \Exception("Concurrent limit", 11009);
+            }
+            return false;
         }
         return RedisHelper::init()->expire($key, 10);
     }
@@ -63,7 +66,7 @@ class CurrentLimit
     /**
      * 限流
      */
-    public function isActionAllowed($userId, $url)
+    public function isActionAllowed($userId, $url, $isThrow)
     {
         $redis = RedisHelper::init();
         $hkey = md5($userId . $url);
@@ -72,11 +75,17 @@ class CurrentLimit
         $pauseKey = sprintf("%s:%s", $this->redisRateLimitPause, $hkey);
 
         if ($redis->exists($forbidKey)) {
-            throw new \Exception("limit request", 11008);
+            if ($isThrow) {
+                throw new \Exception("limit request", 11008);
+            }
+            return false;
         }
 
         if ($redis->exists($pauseKey)) {
-            throw new \Exception("limit request", 11008);
+            if ($isThrow){
+                throw new \Exception("limit request", 11008);
+            }
+            return false;
         }
 
         $this->rateLimit($url, $limitKey, $forbidKey, $pauseKey);
