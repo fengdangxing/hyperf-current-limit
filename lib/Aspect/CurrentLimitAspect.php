@@ -52,8 +52,8 @@ class CurrentLimitAspect extends AbstractAspect
     private function getUniqueName($uniqueName, $request)
     {
         $token = '';
-        $uniqueName = explode('|', $anno['annotation']->uniqueName);
-        foreach ($uniqueName as $value) {
+        $uniqueNameArray = explode('|', $uniqueName);
+        foreach ($uniqueNameArray as $value) {
             $token .= $request->header($value);
         }
         return md5($token);
