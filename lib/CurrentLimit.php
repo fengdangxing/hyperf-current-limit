@@ -46,7 +46,7 @@ class CurrentLimit
         [$key, $hashKey, $v] = $this->getRedisKey($params, $url, $userId);
         $ret = RedisHelper::init()->hSet($key, $hashKey, $v);
         if (!$ret) {
-            throw new \Exception("Concurrent limit", 0);
+            throw new \Exception("Concurrent limit", 11009);
         }
         return RedisHelper::init()->expire($key, 10);
     }
@@ -72,11 +72,11 @@ class CurrentLimit
         $pauseKey = sprintf("%s:%s", $this->redisRateLimitPause, $hkey);
 
         if ($redis->exists($forbidKey)) {
-            throw new \Exception("", 0);
+            throw new \Exception("limit request", 11008);
         }
 
         if ($redis->exists($pauseKey)) {
-            throw new \Exception("", 0);
+            throw new \Exception("limit request", 11008);
         }
 
         $this->rateLimit($url, $limitKey, $forbidKey, $pauseKey);
