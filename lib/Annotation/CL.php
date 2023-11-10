@@ -15,7 +15,6 @@ class CL extends AbstractAnnotation
     public $uniqueName;//唯一值
     public $currentable = true;//并发限制开启
     public $limitable = true;//限流开启
-    public $isThrow = true;//是否抛出异常
 
     public function __construct(...$value)
     {
