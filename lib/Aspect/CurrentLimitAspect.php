@@ -38,12 +38,19 @@ class CurrentLimitAspect extends AbstractAspect
                 }
                 if ($anno['annotation']->currentable) {
                     $currentLimitClass->isConcurrentRequests($params, $url, $token);
+                }
+                try {
+                    $result = $proceedingJoinPoint->process();
+                    if ($anno['annotation']->currentable) {
+                        $currentLimitClass->delConcurrentRequests($params, $url, $token);
+                    }
+                } catch (\Exception $exception) {
+                    if ($anno['annotation']->currentable) {
+                        $currentLimitClass->delConcurrentRequests($params, $url, $token);
+                    }
+                    throw $exception;
+                }
 
-                }
-                $result = $proceedingJoinPoint->process();
-                if ($anno['annotation']->currentable) {
-                    $currentLimitClass->delConcurrentRequests($params, $url, $token);
-                }
             }
         }
         return $result;
