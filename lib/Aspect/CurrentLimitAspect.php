@@ -32,14 +32,14 @@ class CurrentLimitAspect extends AbstractAspect
 
         foreach ($list as $key => $anno) {
             if ($proceedingJoinPoint->className == $anno['class'] && $proceedingJoinPoint->methodName == $anno['method']) {
-                $token = $this->getUniqueName($anno['annotation']->uniqueName, $request);
-                if ($anno['annotation']->limitable) {
-                    $currentLimitClass->isActionAllowed($token, $url);
-                }
-                if ($anno['annotation']->currentable) {
-                    $currentLimitClass->isConcurrentRequests($params, $url, $token);
-                }
                 try {
+                    $token = $this->getUniqueName($anno['annotation']->uniqueName, $request);
+                    if ($anno['annotation']->limitable) {
+                        $currentLimitClass->isActionAllowed($token, $url);
+                    }
+                    if ($anno['annotation']->currentable) {
+                        $currentLimitClass->isConcurrentRequests($params, $url, $token);
+                    }
                     $result = $proceedingJoinPoint->process();
                     if ($anno['annotation']->currentable) {
                         $currentLimitClass->delConcurrentRequests($params, $url, $token);
